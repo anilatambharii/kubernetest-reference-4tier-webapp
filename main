@@ -1,0 +1,96 @@
+
+# Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: CM-web-app
+
+---
+
+# Frontend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: web-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: your-frontend-image
+        ports:
+        - containerPort: 80
+
+---
+
+# Backend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: web-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: your-backend-image
+        ports:
+        - containerPort: 8080
+
+---
+
+# Database Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database
+  namespace: web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      containers:
+      - name: database
+        image: your-database-image
+        ports:
+        - containerPort: 3306
+
+---
+
+# Load Balancer Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-lb
+  namespace: web-app
+spec:
+  selector:
+    app: frontend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+
